@@ -39,12 +39,41 @@ public class fMahasiswa extends javax.swing.JFrame {
         cBARU.setEnabled(true);
         fieldIsian(false);
     }
+    private void storedta() throws SQLException {
+        if(txNIM.getText().equals("")){
+
+            Connection cnn = koneksi();
+            if(!cnn.isClosed()){
+                PreparedStatement PS = cnn.prepareStatement("INSERT INTO mhs (NIM,NAMA,ALAMAT) VALUES (?,?,?);");
+                PS.setString(1, txNIM.getText());
+                PS.setString(2, txNAMA.getText());
+                PS.setString(3, txALAMAT.getText());
+                PS.executeUpdate();
+                cnn.close();
+            }
+            
+        }
+    }
+    private void updatedta() throws SQLException {
+         
+        Connection cnn = koneksi();
+        if(!cnn.isClosed()){
+            PreparedStatement PS = cnn.prepareStatement("UPDATE mhs SET NAMA =?, ALAMAT=?, WHERE NIM=?;");
+            PS.setString(1,txNAMA.getText());
+            PS.setString(2,txALAMAT.getText());
+            PS.setString(3,txNIM.getText());
+            PS.executeUpdate();
+            cnn.close();
+        }
+    
+    }
     private void destroydta(String nim) throws SQLException  {
         Connection cnn = koneksi();
         if(!cnn.isClosed()){
             PreparedStatement PS = cnn.prepareStatement("DELETE FROM mhs WHERE, NIM =?;");
             PS.setString(1, nim);
             PS.executeUpdate();
+            cnn.close();
         }
     }
     private void tombol(boolean opsi){
@@ -301,11 +330,49 @@ public class fMahasiswa extends javax.swing.JFrame {
     }//GEN-LAST:event_TMMouseClicked
 
     private void cBARUActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cBARUActionPerformed
-        // TODO add your handling code here:
+       if (cBARU.getText().equals("Baru")){
+            cBARU.setText("Simpan");
+            cTUTUP.setText("Batal");
+            cUBAH.setEnabled(false);
+            cHAPUS.setEnabled(false);
+            cleartextfield();
+            fieldIsian(true);
+       }else{
+            cBARU.setText("Baru");
+            cTUTUP.setText("Tutup");
+         try {
+            storedta();
+            LIstDataTable(); 
+        } catch (SQLException ex) {
+            Logger.getLogger(fMahasiswa.class.getName()).log(Level.SEVERE, null, ex);
+            }
+         cleartextfield();
+         fieldIsian(false);
+        }
     }//GEN-LAST:event_cBARUActionPerformed
 
     private void cUBAHActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cUBAHActionPerformed
-        // TODO add your handling code here:
+          if (cUBAH.getText().equals("Ubah")){
+            cUBAH.setText("Simpan");
+            cTUTUP.setText("Batal");
+            cBARU.setEnabled(false);
+            cHAPUS.setEnabled(false);
+            fieldIsian(true);
+            txNIM.setEditable(false);
+       }else{
+            cUBAH.setText("Ubah");
+            cTUTUP.setText("Tutup");
+         try {
+            updatedta();
+            LIstDataTable(); 
+        } catch (SQLException ex) {
+            Logger.getLogger(fMahasiswa.class.getName()).log(Level.SEVERE, null, ex);
+            }
+         cleartextfield();
+         fieldIsian(false);
+         cBARU.setEnabled(true);
+         cUBAH.setEnabled(false);
+        }  
     }//GEN-LAST:event_cUBAHActionPerformed
 
     private void cTUTUPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cTUTUPActionPerformed
